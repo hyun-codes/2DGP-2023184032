@@ -18,6 +18,10 @@ def move_circle():
         draw_boy(x,y)
     pass
 
+def move_top():
+    for x in range(50, 751, 5):
+        draw_boy(x, 550)
+        
 def move_rectangle():
     move_top()
     move_right()
