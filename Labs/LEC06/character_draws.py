@@ -54,8 +54,8 @@ def draw_boy(x, y):
 
 while True:
     #move_circle()
-    move_rectangle()
-    #move_triangle()
+    #move_rectangle()
+    move_triangle()
 
     pass
 
