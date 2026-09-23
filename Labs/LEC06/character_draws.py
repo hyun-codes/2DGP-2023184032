@@ -10,7 +10,7 @@ update_canvas()
 delay(1)
 
 def move_circle():
-    for degree in range(360):
+    for degree in range(361):
         theta = math.radians(degree)
         x = 400 + 200 * math.cos(theta)
         y = 300 + 200 * math.sin(theta)
@@ -33,7 +33,7 @@ def move_bottom():
 def move_left():
     for y in range(100, 501, 5):
         draw_boy(200, y)
-           
+
 def move_rectangle():
     move_top()
     move_right()
@@ -54,8 +54,8 @@ def draw_boy(x, y):
 
 while True:
     move_circle()
-    move_rectangle()
-    move_triangle()
+    #move_rectangle()
+    #move_triangle()
 
     pass
 
