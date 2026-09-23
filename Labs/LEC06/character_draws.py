@@ -42,9 +42,14 @@ def move_rectangle():
     
     pass
 
+def move_triangle_left():
+    for x in range(400, 199, -5):
+        y = 2 * x - 300
+        draw_boy(x, y)
+
 def move_triangle():
-    print('triangle')
-    pass
+    move_triangle_left()
+
 
 def draw_boy(x, y):
     clear_canvas()
