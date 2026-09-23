@@ -53,8 +53,8 @@ def draw_boy(x, y):
     delay(0.01)
 
 while True:
-    move_circle()
-    #move_rectangle()
+    #move_circle()
+    move_rectangle()
     #move_triangle()
 
     pass
