@@ -26,7 +26,10 @@ def move_right():
     for y in range(500, 99, -5):
         draw_boy(600, y)  
 
-
+def move_bottom():
+    for x in range(600, 199, -5):
+        draw_boy(x, 100)
+        
 def move_rectangle():
     move_top()
     move_right()
