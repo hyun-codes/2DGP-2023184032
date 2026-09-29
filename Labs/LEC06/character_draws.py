@@ -68,9 +68,9 @@ def move_line(x1, y1, x2, y2, speed=5):
         draw_boy(x, y)
 
 def move_triangle():
-    move_line(400, 500, 200, 100)  # 왼쪽 사선
-    move_line(200, 100, 600, 100)  # 아랫변
-    move_line(600, 100, 400, 500)  # 오른쪽 사선
+    move_triangle_left()
+    move_triangle_bottom()
+    move_triangle_right()
 
 def draw_boy(x, y):
     clear_canvas()
