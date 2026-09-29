@@ -61,7 +61,6 @@ def move_triangle():
     move_triangle_bottom()
     move_triangle_right()
 
-
 def draw_boy(x, y):
     clear_canvas()
     boy.draw(x,y)
@@ -69,8 +68,8 @@ def draw_boy(x, y):
     delay(0.01)
 
 while True:
-    #move_circle()
-    #move_rectangle()
+    move_circle()
+    move_rectangle()
     move_triangle()
 
     pass
