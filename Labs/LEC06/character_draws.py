@@ -20,24 +20,24 @@ def move_circle():
     pass
 
 def move_top():
-    for x in range(400, 199, -5):
+    for x in range(400, 199, -4):
         draw_boy(x, 500)
 
 def move_right():
-    for y in range(100, 501, 5):
+    for y in range(100, 501, 4):
         draw_boy(600, y)
     move_to_center()
 
 def move_to_center():
-    for x in range(600, 399, -5):
+    for x in range(600, 399, -4):
         draw_boy(x, 500)
 
 def move_bottom():
-    for x in range(200, 601, 5):
+    for x in range(200, 601, 4):
         draw_boy(x, 100)
 
 def move_left():
-    for y in range(500, 99, -5):
+    for y in range(500, 99, -4):
         draw_boy(200, y)
 
 def move_rectangle():
@@ -57,7 +57,7 @@ def move_triangle_bottom():
 def move_triangle_right():
     move_line(600, 100, 400, 500)
 
-def move_line(x1, y1, x2, y2, speed=5):
+def move_line(x1, y1, x2, y2, speed=4):
     distance = math.hypot(x2 - x1, y2 - y1)
     steps = int(distance / speed)
 
