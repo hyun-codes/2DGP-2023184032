@@ -11,7 +11,7 @@ update_canvas()
 delay(1)
 
 def move_circle():
-    for degree in range(361):
+    for degree in range(90, 451):
         theta = math.radians(degree)
         x = 400 + 200 * math.cos(theta)
         y = 300 + 200 * math.sin(theta)
