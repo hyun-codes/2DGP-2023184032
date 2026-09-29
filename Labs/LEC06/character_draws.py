@@ -52,8 +52,7 @@ def move_triangle_left():
     move_line(400, 500, 200, 100)
 
 def move_triangle_bottom():
-    for x in range(200, 601, 5):
-        draw_boy(x, 100)
+    move_line(200, 100, 600, 100)
 
 def move_triangle_right():
     for x in range(600, 399, -5):
