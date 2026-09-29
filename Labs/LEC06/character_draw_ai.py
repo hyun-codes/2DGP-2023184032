@@ -63,20 +63,32 @@ def move_rectangle():
     move_line(top_right, TRANSITION_POINT)
 
 
+def move_triangle():
+    bottom_left = (LEFT, BOTTOM)
+    bottom_right = (RIGHT, BOTTOM)
+
+    move_line(TRANSITION_POINT, bottom_left)
+    move_line(bottom_left, bottom_right)
+    move_line(bottom_right, TRANSITION_POINT)
+
+
 def main():
     global character
 
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
-    character = load_image('character.png')
 
-    draw_character(*TRANSITION_POINT)
-    delay(1)
+    try:
+        character = load_image('character.png')
 
-    move_circle()
-    move_rectangle()
-    delay(1)
+        draw_character(*TRANSITION_POINT)
+        delay(1)
 
-    close_canvas()
+        while True:
+            move_circle()
+            move_rectangle()
+            move_triangle()
+    finally:
+        close_canvas()
 
 
 if __name__ == '__main__':
