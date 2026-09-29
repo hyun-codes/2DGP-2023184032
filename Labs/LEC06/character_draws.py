@@ -55,9 +55,7 @@ def move_triangle_bottom():
     move_line(200, 100, 600, 100)
 
 def move_triangle_right():
-    for x in range(600, 399, -5):
-        y = -2 * x + 1300
-        draw_boy(x, y)
+    move_line(600, 100, 400, 500)
 
 def move_line(x1, y1, x2, y2, speed=5):
     distance = math.hypot(x2 - x1, y2 - y1)
