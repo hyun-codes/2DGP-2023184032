@@ -11,6 +11,10 @@ CENTER_X = 400
 CENTER_Y = 300
 CIRCLE_RADIUS = 200
 TRANSITION_POINT = (CENTER_X, CENTER_Y + CIRCLE_RADIUS)
+LEFT = CENTER_X - CIRCLE_RADIUS
+RIGHT = CENTER_X + CIRCLE_RADIUS
+BOTTOM = CENTER_Y - CIRCLE_RADIUS
+TOP = CENTER_Y + CIRCLE_RADIUS
 
 character = None
 
@@ -33,6 +37,32 @@ def move_circle():
         draw_character(x, y)
 
 
+def move_line(start, end):
+    start_x, start_y = start
+    end_x, end_y = end
+    distance = math.hypot(end_x - start_x, end_y - start_y)
+    steps = max(1, round(distance / MOVE_SPEED))
+
+    for step in range(steps + 1):
+        ratio = step / steps
+        x = start_x + (end_x - start_x) * ratio
+        y = start_y + (end_y - start_y) * ratio
+        draw_character(x, y)
+
+
+def move_rectangle():
+    top_left = (LEFT, TOP)
+    bottom_left = (LEFT, BOTTOM)
+    bottom_right = (RIGHT, BOTTOM)
+    top_right = (RIGHT, TOP)
+
+    move_line(TRANSITION_POINT, top_left)
+    move_line(top_left, bottom_left)
+    move_line(bottom_left, bottom_right)
+    move_line(bottom_right, top_right)
+    move_line(top_right, TRANSITION_POINT)
+
+
 def main():
     global character
 
@@ -43,6 +73,7 @@ def main():
     delay(1)
 
     move_circle()
+    move_rectangle()
     delay(1)
 
     close_canvas()
