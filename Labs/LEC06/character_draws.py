@@ -6,7 +6,7 @@ open_canvas(800,600)
 boy = load_image('character.png')
 
 clear_canvas()
-boy.draw(400, 300)
+boy.draw(400, 500)
 update_canvas()
 delay(1)
 
