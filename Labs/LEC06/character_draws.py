@@ -20,7 +20,7 @@ def move_circle():
     pass
 
 def move_top():
-     for x in range(200, 601, 5):
+    for x in range(400, 199, -5):
         draw_boy(x, 500)
 
 def move_right():
