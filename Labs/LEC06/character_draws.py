@@ -32,7 +32,7 @@ def move_bottom():
         draw_boy(x, 100)
 
 def move_left():
-    for y in range(100, 501, 5):
+    for y in range(500, 99, -5):
         draw_boy(200, y)
 
 def move_rectangle():
