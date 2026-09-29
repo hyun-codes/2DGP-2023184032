@@ -1,5 +1,6 @@
 # 실습 과제 진행
 from pico2d import *
+import math
 
 open_canvas(800,600)
 boy = load_image('character.png')
@@ -56,10 +57,20 @@ def move_triangle_right():
         y = -2 * x + 1300
         draw_boy(x, y)
 
+def move_line(x1, y1, x2, y2, speed=5):
+    distance = math.hypot(x2 - x1, y2 - y1)
+    steps = int(distance / speed)
+
+    for i in range(steps + 1):
+        t = i / steps
+        x = x1 + (x2 - x1) * t
+        y = y1 + (y2 - y1) * t
+        draw_boy(x, y)
+
 def move_triangle():
-    move_triangle_left()
-    move_triangle_bottom()
-    move_triangle_right()
+    move_line(400, 500, 200, 100)  # 왼쪽 사선
+    move_line(200, 100, 600, 100)  # 아랫변
+    move_line(600, 100, 400, 500)  # 오른쪽 사선
 
 def draw_boy(x, y):
     clear_canvas()
