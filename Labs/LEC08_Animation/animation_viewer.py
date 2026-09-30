@@ -30,13 +30,21 @@ def handle_events():
     return True
 
 
+def draw_frame(sprite_sheet, frame):
+    rectangle = to_clip_rectangle(frame, sprite_sheet.h)
+    clear_canvas()
+    sprite_sheet.clip_draw(
+        *rectangle, CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2,
+    )
+    update_canvas()
+
+
 def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     sprite_path = Path(__file__).with_name('BlueKnightSpriteSheet.png')
     sprite_sheet = load_image(str(sprite_path))
     while handle_events():
-        clear_canvas()
-        update_canvas()
+        draw_frame(sprite_sheet, IDLE_FRAMES[0])
         delay(0.01)
     close_canvas()
 
