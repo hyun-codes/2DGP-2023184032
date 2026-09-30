@@ -7,6 +7,7 @@ CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
 DRAW_SCALE = 4.0
 REPEAT_COUNT = 5
+PAUSE_SECONDS = 1.0
 
 # 가산점: 각 프레임의 (left, top, width, height)를 개별 정의한다.
 IDLE_FRAMES = (
@@ -135,6 +136,7 @@ def main():
                     break
             if not running:
                 break
+            delay(PAUSE_SECONDS)
     close_canvas()
 
 
