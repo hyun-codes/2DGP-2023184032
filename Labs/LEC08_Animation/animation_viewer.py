@@ -51,12 +51,17 @@ def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     sprite_path = Path(__file__).with_name('BlueKnightSpriteSheet.png')
     sprite_sheet = load_image(str(sprite_path))
-    frame_index = 0
-    while handle_events():
-        _, frames, frame_seconds = ANIMATIONS[0]
-        draw_frame(sprite_sheet, frames[frame_index])
-        frame_index = (frame_index + 1) % len(frames)
-        delay(frame_seconds)
+    running = True
+    while running:
+        for _, frames, frame_seconds in ANIMATIONS:
+            for frame in frames:
+                running = handle_events()
+                if not running:
+                    break
+                draw_frame(sprite_sheet, frame)
+                delay(frame_seconds)
+            if not running:
+                break
     close_canvas()
 
 
