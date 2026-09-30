@@ -5,6 +5,7 @@ from pico2d import *
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
+DRAW_SCALE = 4.0
 
 # 가산점: 각 프레임의 (left, top, width, height)를 개별 정의한다.
 IDLE_FRAMES = (
@@ -32,9 +33,11 @@ def handle_events():
 
 def draw_frame(sprite_sheet, frame):
     rectangle = to_clip_rectangle(frame, sprite_sheet.h)
+    width, height = frame[2:]
     clear_canvas()
     sprite_sheet.clip_draw(
         *rectangle, CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2,
+        round(width * DRAW_SCALE), round(height * DRAW_SCALE),
     )
     update_canvas()
 
