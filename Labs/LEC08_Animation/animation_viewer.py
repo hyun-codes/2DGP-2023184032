@@ -84,12 +84,12 @@ SUMMON_FRAMES = (
 
 # 가산점: 동작별 프레임 수는 해당 튜플의 길이로 결정된다.
 ANIMATIONS = (
-    ('Summon', SUMMON_FRAMES, 0.12),
-    ('Attack', ATTACK_FRAMES, 0.1),
-    ('Jump', JUMP_FRAMES, 0.1),
-    ('Run', RUN_FRAMES, 0.08),
-    ('Walk', WALK_FRAMES, 0.11),
     ('Idle', IDLE_FRAMES, 0.14),
+    ('Walk', WALK_FRAMES, 0.11),
+    ('Run', RUN_FRAMES, 0.08),
+    ('Jump', JUMP_FRAMES, 0.10),
+    ('Attack', ATTACK_FRAMES, 0.10),
+    ('Summon', SUMMON_FRAMES, 0.12),
 )
 
 
@@ -119,25 +119,27 @@ def draw_frame(sprite_sheet, frame):
     update_canvas()
 
 
+def play_animation(sprite_sheet, animation):
+    name, frames, frame_seconds = animation
+    print(f'{name}: {len(frames)} frames, {REPEAT_COUNT} repeats')
+    for _ in range(REPEAT_COUNT):
+        for frame in frames:
+            if not show_frame_for(sprite_sheet, frame, frame_seconds):
+                return False
+    return show_frame_for(sprite_sheet, frames[-1], PAUSE_SECONDS)
+
+
 def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
-    sprite_path = Path(__file__).with_name('BlueKnightSpriteSheet.png')
-    sprite_sheet = load_image(str(sprite_path))
-    running = True
-    while running:
-        for _, frames, frame_seconds in ANIMATIONS:
-            for _ in range(REPEAT_COUNT):
-                for frame in frames:
-                    running = handle_events()
-                    if not running:
-                        break
-                    running = show_frame_for(sprite_sheet, frame, frame_seconds)
-                if not running:
-                    break
-            if not running:
-                break
-            running = show_frame_for(sprite_sheet, frames[-1], PAUSE_SECONDS)
-    close_canvas()
+    try:
+        sprite_path = Path(__file__).with_name('BlueKnightSpriteSheet.png')
+        sprite_sheet = load_image(str(sprite_path))
+        while True:
+            for animation in ANIMATIONS:
+                if not play_animation(sprite_sheet, animation):
+                    return
+    finally:
+        close_canvas()
 
 
 def show_frame_for(sprite_sheet, frame, seconds):
