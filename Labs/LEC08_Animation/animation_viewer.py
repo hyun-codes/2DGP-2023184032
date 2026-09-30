@@ -1,4 +1,5 @@
 from pathlib import Path
+from time import monotonic
 
 from pico2d import *
 
@@ -130,14 +131,24 @@ def main():
                     running = handle_events()
                     if not running:
                         break
-                    draw_frame(sprite_sheet, frame)
-                    delay(frame_seconds)
+                    running = show_frame_for(sprite_sheet, frame, frame_seconds)
                 if not running:
                     break
             if not running:
                 break
-            delay(PAUSE_SECONDS)
+            running = show_frame_for(sprite_sheet, frames[-1], PAUSE_SECONDS)
     close_canvas()
+
+
+def show_frame_for(sprite_sheet, frame, seconds):
+    """정지 중에도 창 닫기/ESC 이벤트를 계속 처리한다."""
+    deadline = monotonic() + seconds
+    while monotonic() < deadline:
+        if not handle_events():
+            return False
+        draw_frame(sprite_sheet, frame)
+        delay(0.005)
+    return True
 
 
 if __name__ == '__main__':
