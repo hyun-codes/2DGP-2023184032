@@ -62,7 +62,7 @@ class ViewerTests(unittest.TestCase):
             calls.append(animation[0])
             return len(calls) < len(viewer.ANIMATIONS) + 1
 
-        with patch.object(viewer, 'open_canvas'), patch.object(viewer, 'load_image'):
+        with patch.object(viewer, 'open_canvas'), patch.object(viewer, 'load_image'), patch.object(viewer, 'hide_lattice'):
             with patch.object(viewer, 'play_animation', side_effect=play):
                 with patch.object(viewer, 'close_canvas') as close:
                     viewer.main()

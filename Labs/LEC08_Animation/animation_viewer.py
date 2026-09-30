@@ -132,6 +132,7 @@ def play_animation(sprite_sheet, animation):
 def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     try:
+        hide_lattice()
         sprite_path = Path(__file__).with_name('BlueKnightSpriteSheet.png')
         sprite_sheet = load_image(str(sprite_path))
         while True:
