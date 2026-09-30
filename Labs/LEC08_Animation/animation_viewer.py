@@ -7,6 +7,12 @@ CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
 
 
+def to_clip_rectangle(frame, sheet_height):
+    """이미지 위쪽 기준 좌표를 pico2d의 아래쪽 기준 좌표로 변환한다."""
+    left, top, width, height = frame
+    return left, sheet_height - top - height, width, height
+
+
 def handle_events():
     for event in get_events():
         if event.type == SDL_QUIT:
