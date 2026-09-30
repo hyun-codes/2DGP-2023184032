@@ -15,6 +15,11 @@ IDLE_FRAMES = (
     (811, 1202, 76, 97), (891, 1202, 76, 97),
 )
 
+# 가산점: 동작별 프레임 수는 해당 튜플의 길이로 결정된다.
+ANIMATIONS = (
+    ('Idle', IDLE_FRAMES, 0.14),
+)
+
 
 def to_clip_rectangle(frame, sheet_height):
     """이미지 위쪽 기준 좌표를 pico2d의 아래쪽 기준 좌표로 변환한다."""
@@ -46,9 +51,12 @@ def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     sprite_path = Path(__file__).with_name('BlueKnightSpriteSheet.png')
     sprite_sheet = load_image(str(sprite_path))
+    frame_index = 0
     while handle_events():
-        draw_frame(sprite_sheet, IDLE_FRAMES[0])
-        delay(0.01)
+        _, frames, frame_seconds = ANIMATIONS[0]
+        draw_frame(sprite_sheet, frames[frame_index])
+        frame_index = (frame_index + 1) % len(frames)
+        delay(frame_seconds)
     close_canvas()
 
 
