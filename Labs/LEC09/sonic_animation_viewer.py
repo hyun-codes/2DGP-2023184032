@@ -8,10 +8,12 @@ FRAME_INTERVAL = 0.1
 ACTION_REPEAT_COUNT = 5
 ACTION_PAUSE_SECONDS = 1.0
 DEFAULT_SCALE = 4
+IMAGE_PATH = 'sonic-sprite.png'
 
 
 def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
+    sprite_sheet = load_image(IMAGE_PATH)
     close_canvas()
 
 
