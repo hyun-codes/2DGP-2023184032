@@ -23,14 +23,29 @@ def draw_frame(sprite_sheet, frame):
                            width * scale, height * scale)
 
 
+def handle_events():
+    for event in get_events():
+        if event.type == SDL_QUIT:
+            return False
+        if event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            return False
+    return True
+
+
 def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     sprite_sheet = load_image(IMAGE_PATH)
 
-    clear_canvas()
-    draw_frame(sprite_sheet, FIRST_FRAME)
-    update_canvas()
-    delay(1.0)
+    running = True
+    for _ in range(100):
+        clear_canvas()
+        draw_frame(sprite_sheet, FIRST_FRAME)
+        update_canvas()
+
+        running = handle_events()
+        if not running:
+            break
+        delay(0.01)
 
     close_canvas()
 
