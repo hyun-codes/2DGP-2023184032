@@ -163,6 +163,11 @@ def handle_events():
     return True
 
 
+def get_next_action_index(action_index):
+    """마지막 동작 다음에는 첫 번째 동작을 선택한다."""
+    return (action_index + 1) % len(ACTIONS)
+
+
 def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     sprite_sheet = load_image(IMAGE_PATH)
@@ -193,7 +198,7 @@ def main():
             last_frame_time = current_time
         elif (playback_state == PAUSED_BETWEEN_ACTIONS and
               current_time - pause_started_at >= ACTION_PAUSE_SECONDS):
-            action_index = (action_index + 1) % len(ACTIONS)
+            action_index = get_next_action_index(action_index)
             frames = ACTIONS[action_index]['frames']
             playback_state = PLAYING
             frame_index = 0
