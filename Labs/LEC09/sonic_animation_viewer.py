@@ -171,14 +171,58 @@ ACTIONS = (
 )
 
 
-def draw_frame(sprite_sheet, frame):
+def get_frame_scale(frame):
+    _, _, width, height = frame
+    return min(DEFAULT_SCALE,
+               (CANVAS_WIDTH - CANVAS_MARGIN * 2) / width,
+               (CANVAS_HEIGHT - CANVAS_MARGIN * 2) / height)
+
+
+def draw_frame(sprite_sheet, frame, destination_x, destination_y, direction):
     x, y, width, height = frame
-    scale = min(DEFAULT_SCALE,
-                (CANVAS_WIDTH - CANVAS_MARGIN * 2) / width,
-                (CANVAS_HEIGHT - CANVAS_MARGIN * 2) / height)
-    sprite_sheet.clip_draw(x, y, width, height,
-                           CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2,
-                           width * scale, height * scale)
+    scale = get_frame_scale(frame)
+    draw_width = width * scale
+    draw_height = height * scale
+    if direction < 0:
+        sprite_sheet.clip_composite_draw(
+            x, y, width, height, 0, 'h',
+            destination_x, destination_y, draw_width, draw_height)
+    else:
+        sprite_sheet.clip_draw(
+            x, y, width, height,
+            destination_x, destination_y, draw_width, draw_height)
+
+
+def get_action_horizontal_bounds(action):
+    half_width = max(
+        frame[2] * get_frame_scale(frame) / 2
+        for frame in action['frames']
+    )
+    return (CANVAS_MARGIN + half_width,
+            CANVAS_WIDTH - CANVAS_MARGIN - half_width)
+
+
+def get_initial_position(action):
+    if action['movement'] == MOVEMENT_CENTER:
+        return CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2
+    left_bound, _ = get_action_horizontal_bounds(action)
+    return left_bound, CANVAS_HEIGHT / 2
+
+
+def update_horizontal_position(action, position_x, direction, elapsed_time):
+    if action['movement'] == MOVEMENT_CENTER:
+        return position_x, direction
+
+    left_bound, right_bound = get_action_horizontal_bounds(action)
+    position_x += action['speed'] * direction * elapsed_time
+    while position_x < left_bound or position_x > right_bound:
+        if position_x > right_bound:
+            position_x = right_bound - (position_x - right_bound)
+            direction = -1
+        elif position_x < left_bound:
+            position_x = left_bound + (left_bound - position_x)
+            direction = 1
+    return position_x, direction
 
 
 def handle_events():
@@ -234,15 +278,25 @@ def main():
         sprite_sheet = load_image(IMAGE_PATH)
 
         action_index = 0
-        frames = ACTIONS[action_index]['frames']
+        current_action = ACTIONS[action_index]
+        frames = current_action['frames']
         frame_index = 0
         completed_repeats = 0
         playback_state = PLAYING
         last_frame_time = get_time()
+        last_position_time = last_frame_time
         pause_started_at = None
+        position_x, position_y = get_initial_position(current_action)
+        direction = 1
         running = True
         while running:
             current_time = get_time()
+            elapsed_time = current_time - last_position_time
+            if playback_state == PLAYING:
+                position_x, direction = update_horizontal_position(
+                    current_action, position_x, direction, elapsed_time)
+            last_position_time = current_time
+
             if (playback_state == PLAYING and
                     current_time - last_frame_time >= FRAME_INTERVAL):
                 next_frame_index = (frame_index + 1) % len(frames)
@@ -260,15 +314,20 @@ def main():
             elif (playback_state == PAUSED_BETWEEN_ACTIONS and
                   current_time - pause_started_at >= ACTION_PAUSE_SECONDS):
                 action_index = get_next_action_index(action_index)
-                frames = ACTIONS[action_index]['frames']
+                current_action = ACTIONS[action_index]
+                frames = current_action['frames']
                 playback_state = PLAYING
                 frame_index = 0
                 completed_repeats = 0
                 last_frame_time = current_time
+                last_position_time = current_time
                 pause_started_at = None
+                position_x, position_y = get_initial_position(current_action)
+                direction = 1
 
             clear_canvas()
-            draw_frame(sprite_sheet, frames[frame_index])
+            draw_frame(sprite_sheet, frames[frame_index],
+                       position_x, position_y, direction)
             update_canvas()
 
             running = handle_events()
