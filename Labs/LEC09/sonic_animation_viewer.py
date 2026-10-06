@@ -59,8 +59,8 @@ ACTIONS = (
     },
     {
         'name': '급정지',
-        'movement': MOVEMENT_HORIZONTAL,
-        'speed': 160.0,
+        'movement': MOVEMENT_CENTER,
+        'speed': 0.0,
         'frames': (
             (1, 361, 33, 40),
             (39, 362, 35, 39),
@@ -71,10 +71,9 @@ ACTIONS = (
         ),
     },
     {
-        'name': '회전 점프',
-        'movement': MOVEMENT_JUMP,
-        'speed': 200.0,
-        'jump_height': 140.0,
+        'name': '구르기',
+        'movement': MOVEMENT_HORIZONTAL,
+        'speed': 220.0,
         'frames': (
             (1, 326, 29, 30),
             (36, 327, 28, 31),
@@ -88,7 +87,7 @@ ACTIONS = (
         ),
     },
     {
-        'name': '회전 구체',
+        'name': '회전 진입',
         'movement': MOVEMENT_CENTER,
         'speed': 0.0,
         'frames': (
@@ -102,9 +101,8 @@ ACTIONS = (
     },
     {
         'name': '스프링과 착지',
-        'movement': MOVEMENT_JUMP,
-        'speed': 100.0,
-        'jump_height': 200.0,
+        'movement': MOVEMENT_CENTER,
+        'speed': 0.0,
         'frames': (
             (1, 251, 29, 35),
             (36, 251, 30, 35),
@@ -115,9 +113,9 @@ ACTIONS = (
         ),
     },
     {
-        'name': '특수 이동',
-        'movement': MOVEMENT_HORIZONTAL,
-        'speed': 220.0,
+        'name': '특수 동작',
+        'movement': MOVEMENT_CENTER,
+        'speed': 0.0,
         'frames': (
             (1, 207, 29, 35),
             (36, 207, 30, 35),
@@ -129,8 +127,8 @@ ACTIONS = (
     },
     {
         'name': '피격과 쓰러짐',
-        'movement': MOVEMENT_HORIZONTAL,
-        'speed': 140.0,
+        'movement': MOVEMENT_CENTER,
+        'speed': 0.0,
         'frames': (
             (1, 154, 24, 45),
             (31, 154, 29, 44),
@@ -144,8 +142,8 @@ ACTIONS = (
     },
     {
         'name': '균형 잡기와 밀기',
-        'movement': MOVEMENT_HORIZONTAL,
-        'speed': 60.0,
+        'movement': MOVEMENT_CENTER,
+        'speed': 0.0,
         'frames': (
             (1, 108, 27, 38),
             (31, 110, 31, 36),
@@ -286,8 +284,8 @@ def validate_actions():
                     y + height > SPRITE_SHEET_HEIGHT):
                 raise ValueError(f'{name} 동작의 프레임 범위가 잘못되었습니다.')
 
-    if moving_action_count != 8 or centered_action_count != 2:
-        raise ValueError('이동 동작 8종과 제자리 동작 2종이 필요합니다.')
+    if moving_action_count != 3 or centered_action_count != 7:
+        raise ValueError('이동 동작 3종과 제자리 동작 7종이 필요합니다.')
 
 
 def main():
