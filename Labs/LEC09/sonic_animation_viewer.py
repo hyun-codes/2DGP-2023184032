@@ -57,12 +57,16 @@ def main():
 
     frames = ACTIONS[0]['frames']
     frame_index = 0
+    completed_repeats = 0
     last_frame_time = get_time()
     running = True
     while running:
         current_time = get_time()
         if current_time - last_frame_time >= FRAME_INTERVAL:
-            frame_index = (frame_index + 1) % len(frames)
+            next_frame_index = (frame_index + 1) % len(frames)
+            if next_frame_index == 0:
+                completed_repeats += 1
+            frame_index = next_frame_index
             last_frame_time = current_time
 
         clear_canvas()
