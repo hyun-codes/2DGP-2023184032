@@ -8,15 +8,19 @@ FRAME_INTERVAL = 0.1
 ACTION_REPEAT_COUNT = 5
 ACTION_PAUSE_SECONDS = 1.0
 DEFAULT_SCALE = 4
+CANVAS_MARGIN = 40
 IMAGE_PATH = 'sonic-sprite.png'
 FIRST_FRAME = (1, 447, 29, 39)
 
 
 def draw_frame(sprite_sheet, frame):
     x, y, width, height = frame
+    scale = min(DEFAULT_SCALE,
+                (CANVAS_WIDTH - CANVAS_MARGIN * 2) / width,
+                (CANVAS_HEIGHT - CANVAS_MARGIN * 2) / height)
     sprite_sheet.clip_draw(x, y, width, height,
                            CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2,
-                           width * DEFAULT_SCALE, height * DEFAULT_SCALE)
+                           width * scale, height * scale)
 
 
 def main():
