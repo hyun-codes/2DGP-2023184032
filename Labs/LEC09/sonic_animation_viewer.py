@@ -58,15 +58,23 @@ def main():
     frames = ACTIONS[0]['frames']
     frame_index = 0
     completed_repeats = 0
+    animation_finished = False
     last_frame_time = get_time()
     running = True
     while running:
         current_time = get_time()
-        if current_time - last_frame_time >= FRAME_INTERVAL:
+        if (not animation_finished and
+                current_time - last_frame_time >= FRAME_INTERVAL):
             next_frame_index = (frame_index + 1) % len(frames)
             if next_frame_index == 0:
                 completed_repeats += 1
-            frame_index = next_frame_index
+                if completed_repeats >= ACTION_REPEAT_COUNT:
+                    animation_finished = True
+                    frame_index = len(frames) - 1
+                else:
+                    frame_index = next_frame_index
+            else:
+                frame_index = next_frame_index
             last_frame_time = current_time
 
         clear_canvas()
