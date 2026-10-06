@@ -4,6 +4,8 @@ from pico2d import *
 
 CANVAS_WIDTH = 1200
 CANVAS_HEIGHT = 800
+SPRITE_SHEET_WIDTH = 399
+SPRITE_SHEET_HEIGHT = 525
 FRAME_INTERVAL = 0.1
 ACTION_REPEAT_COUNT = 5
 ACTION_PAUSE_SECONDS = 1.0
@@ -168,52 +170,76 @@ def get_next_action_index(action_index):
     return (action_index + 1) % len(ACTIONS)
 
 
-def main():
-    open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
-    sprite_sheet = load_image(IMAGE_PATH)
+def validate_actions():
+    """동작 이름과 모든 프레임 좌표가 유효한지 확인한다."""
+    if not ACTIONS:
+        raise ValueError('재생할 소닉 동작이 없습니다.')
 
-    action_index = 0
-    frames = ACTIONS[action_index]['frames']
-    frame_index = 0
-    completed_repeats = 0
-    playback_state = PLAYING
-    last_frame_time = get_time()
-    pause_started_at = None
-    running = True
-    while running:
-        current_time = get_time()
-        if (playback_state == PLAYING and
-                current_time - last_frame_time >= FRAME_INTERVAL):
-            next_frame_index = (frame_index + 1) % len(frames)
-            if next_frame_index == 0:
-                completed_repeats += 1
-                if completed_repeats >= ACTION_REPEAT_COUNT:
-                    playback_state = PAUSED_BETWEEN_ACTIONS
-                    frame_index = len(frames) - 1
-                    pause_started_at = current_time
+    action_names = set()
+    for action in ACTIONS:
+        name = action['name']
+        frames = action['frames']
+        if not name or name in action_names:
+            raise ValueError(f'동작 이름이 비어 있거나 중복되었습니다: {name!r}')
+        if not frames:
+            raise ValueError(f'{name} 동작에 프레임이 없습니다.')
+        action_names.add(name)
+
+        for x, y, width, height in frames:
+            if (x < 0 or y < 0 or width <= 0 or height <= 0 or
+                    x + width > SPRITE_SHEET_WIDTH or
+                    y + height > SPRITE_SHEET_HEIGHT):
+                raise ValueError(f'{name} 동작의 프레임 범위가 잘못되었습니다.')
+
+
+def main():
+    validate_actions()
+    open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
+    try:
+        sprite_sheet = load_image(IMAGE_PATH)
+
+        action_index = 0
+        frames = ACTIONS[action_index]['frames']
+        frame_index = 0
+        completed_repeats = 0
+        playback_state = PLAYING
+        last_frame_time = get_time()
+        pause_started_at = None
+        running = True
+        while running:
+            current_time = get_time()
+            if (playback_state == PLAYING and
+                    current_time - last_frame_time >= FRAME_INTERVAL):
+                next_frame_index = (frame_index + 1) % len(frames)
+                if next_frame_index == 0:
+                    completed_repeats += 1
+                    if completed_repeats >= ACTION_REPEAT_COUNT:
+                        playback_state = PAUSED_BETWEEN_ACTIONS
+                        frame_index = len(frames) - 1
+                        pause_started_at = current_time
+                    else:
+                        frame_index = next_frame_index
                 else:
                     frame_index = next_frame_index
-            else:
-                frame_index = next_frame_index
-            last_frame_time = current_time
-        elif (playback_state == PAUSED_BETWEEN_ACTIONS and
-              current_time - pause_started_at >= ACTION_PAUSE_SECONDS):
-            action_index = get_next_action_index(action_index)
-            frames = ACTIONS[action_index]['frames']
-            playback_state = PLAYING
-            frame_index = 0
-            completed_repeats = 0
-            last_frame_time = current_time
-            pause_started_at = None
+                last_frame_time = current_time
+            elif (playback_state == PAUSED_BETWEEN_ACTIONS and
+                  current_time - pause_started_at >= ACTION_PAUSE_SECONDS):
+                action_index = get_next_action_index(action_index)
+                frames = ACTIONS[action_index]['frames']
+                playback_state = PLAYING
+                frame_index = 0
+                completed_repeats = 0
+                last_frame_time = current_time
+                pause_started_at = None
 
-        clear_canvas()
-        draw_frame(sprite_sheet, frames[frame_index])
-        update_canvas()
+            clear_canvas()
+            draw_frame(sprite_sheet, frames[frame_index])
+            update_canvas()
 
-        running = handle_events()
-        delay(0.001)
-
-    close_canvas()
+            running = handle_events()
+            delay(0.001)
+    finally:
+        close_canvas()
 
 
 if __name__ == '__main__':
