@@ -16,6 +16,7 @@ PLAYING = 'playing'
 PAUSED_BETWEEN_ACTIONS = 'paused_between_actions'
 MOVEMENT_CENTER = 'center'
 MOVEMENT_HORIZONTAL = 'horizontal'
+MOVEMENT_VERTICAL = 'vertical'
 
 # 프레임 좌표 형식: (왼쪽 x, 아래쪽 y, 너비, 높이)
 ACTIONS = (
@@ -99,9 +100,10 @@ ACTIONS = (
         ),
     },
     {
-        'name': '스프링과 착지',
-        'movement': MOVEMENT_CENTER,
+        'name': '수직 점프',
+        'movement': MOVEMENT_VERTICAL,
         'speed': 0.0,
+        'jump_height': 220.0,
         'frames': (
             (1, 251, 29, 35),
             (36, 251, 30, 35),
@@ -200,14 +202,14 @@ def get_action_horizontal_bounds(action):
 
 
 def get_initial_position(action):
-    if action['movement'] == MOVEMENT_CENTER:
+    if action['movement'] != MOVEMENT_HORIZONTAL:
         return CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2
     left_bound, _ = get_action_horizontal_bounds(action)
     return left_bound, CANVAS_HEIGHT / 2
 
 
 def update_horizontal_position(action, position_x, direction, elapsed_time):
-    if action['movement'] == MOVEMENT_CENTER:
+    if action['movement'] != MOVEMENT_HORIZONTAL:
         return position_x, direction
 
     left_bound, right_bound = get_action_horizontal_bounds(action)
@@ -220,6 +222,16 @@ def update_horizontal_position(action, position_x, direction, elapsed_time):
             position_x = left_bound + (left_bound - position_x)
             direction = 1
     return position_x, direction
+
+
+def get_vertical_position(action, action_elapsed):
+    if action['movement'] != MOVEMENT_VERTICAL:
+        return CANVAS_HEIGHT / 2
+
+    jump_duration = len(action['frames']) * FRAME_INTERVAL
+    jump_phase = (action_elapsed % jump_duration) / jump_duration
+    jump_offset = 4 * action['jump_height'] * jump_phase * (1 - jump_phase)
+    return CANVAS_HEIGHT / 2 + jump_offset
 
 
 def handle_events():
@@ -253,10 +265,16 @@ def validate_actions():
             raise ValueError(f'동작 이름이 비어 있거나 중복되었습니다: {name!r}')
         if not frames:
             raise ValueError(f'{name} 동작에 프레임이 없습니다.')
-        if movement not in (MOVEMENT_CENTER, MOVEMENT_HORIZONTAL):
+        if movement not in (MOVEMENT_CENTER,
+                            MOVEMENT_HORIZONTAL,
+                            MOVEMENT_VERTICAL):
             raise ValueError(f'{name} 동작의 이동 유형이 잘못되었습니다.')
-        if speed < 0 or (movement != MOVEMENT_CENTER and speed == 0):
+        if speed < 0 or (movement == MOVEMENT_HORIZONTAL and speed == 0):
             raise ValueError(f'{name} 동작의 이동 속도가 잘못되었습니다.')
+        if movement != MOVEMENT_HORIZONTAL and speed != 0:
+            raise ValueError(f'{name} 동작에는 수평 이동 속도를 사용할 수 없습니다.')
+        if movement == MOVEMENT_VERTICAL and action.get('jump_height', 0) <= 0:
+            raise ValueError(f'{name} 동작의 점프 높이가 잘못되었습니다.')
         if movement == MOVEMENT_CENTER:
             centered_action_count += 1
         else:
@@ -269,8 +287,8 @@ def validate_actions():
                     y + height > SPRITE_SHEET_HEIGHT):
                 raise ValueError(f'{name} 동작의 프레임 범위가 잘못되었습니다.')
 
-    if moving_action_count != 3 or centered_action_count != 7:
-        raise ValueError('이동 동작 3종과 제자리 동작 7종이 필요합니다.')
+    if moving_action_count != 4 or centered_action_count != 6:
+        raise ValueError('이동 동작 4종과 제자리 동작 6종이 필요합니다.')
 
 
 def main():
@@ -290,13 +308,17 @@ def main():
         pause_started_at = None
         position_x, position_y = get_initial_position(current_action)
         direction = 1
+        action_elapsed = 0.0
         running = True
         while running:
             current_time = get_time()
             elapsed_time = current_time - last_position_time
             if playback_state == PLAYING:
+                action_elapsed += elapsed_time
                 position_x, direction = update_horizontal_position(
                     current_action, position_x, direction, elapsed_time)
+                position_y = get_vertical_position(
+                    current_action, action_elapsed)
             last_position_time = current_time
 
             if (playback_state == PLAYING and
@@ -308,6 +330,8 @@ def main():
                         playback_state = PAUSED_BETWEEN_ACTIONS
                         frame_index = len(frames) - 1
                         pause_started_at = current_time
+                        if current_action['movement'] == MOVEMENT_VERTICAL:
+                            position_y = CANVAS_HEIGHT / 2
                     else:
                         frame_index = next_frame_index
                 else:
@@ -326,6 +350,7 @@ def main():
                 pause_started_at = None
                 position_x, position_y = get_initial_position(current_action)
                 direction = 1
+                action_elapsed = 0.0
 
             clear_canvas()
             draw_frame(sprite_sheet, frames[frame_index],
