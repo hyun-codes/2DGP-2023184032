@@ -20,9 +20,9 @@ MOVEMENT_HORIZONTAL = 'horizontal'
 # 프레임 좌표 형식: (왼쪽 x, 아래쪽 y, 너비, 높이)
 ACTIONS = (
     {
-        'name': '걷기와 달리기 전환',
-        'movement': MOVEMENT_HORIZONTAL,
-        'speed': 120.0,
+        'name': '대기와 웅크리기',
+        'movement': MOVEMENT_CENTER,
+        'speed': 0.0,
         'frames': (
             (1, 447, 29, 39),
             (31, 447, 26, 38),
@@ -38,9 +38,9 @@ ACTIONS = (
         ),
     },
     {
-        'name': '빠르게 달리기',
+        'name': '걷기',
         'movement': MOVEMENT_HORIZONTAL,
-        'speed': 280.0,
+        'speed': 120.0,
         'frames': (
             (8, 408, 26, 37),
             (37, 408, 27, 37),
@@ -57,9 +57,9 @@ ACTIONS = (
         ),
     },
     {
-        'name': '급정지',
-        'movement': MOVEMENT_CENTER,
-        'speed': 0.0,
+        'name': '달리기',
+        'movement': MOVEMENT_HORIZONTAL,
+        'speed': 280.0,
         'frames': (
             (1, 361, 33, 40),
             (39, 362, 35, 39),
