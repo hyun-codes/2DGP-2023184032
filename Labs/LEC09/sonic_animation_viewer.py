@@ -80,6 +80,13 @@ def main():
             else:
                 frame_index = next_frame_index
             last_frame_time = current_time
+        elif (playback_state == PAUSED_BETWEEN_ACTIONS and
+              current_time - pause_started_at >= ACTION_PAUSE_SECONDS):
+            playback_state = PLAYING
+            frame_index = 0
+            completed_repeats = 0
+            last_frame_time = current_time
+            pause_started_at = None
 
         clear_canvas()
         draw_frame(sprite_sheet, frames[frame_index])
