@@ -57,15 +57,20 @@ def main():
 
     frames = ACTIONS[0]['frames']
     frame_index = 0
+    last_frame_time = get_time()
     running = True
     while running:
+        current_time = get_time()
+        if current_time - last_frame_time >= FRAME_INTERVAL:
+            frame_index = (frame_index + 1) % len(frames)
+            last_frame_time = current_time
+
         clear_canvas()
         draw_frame(sprite_sheet, frames[frame_index])
         update_canvas()
 
         running = handle_events()
-        delay(FRAME_INTERVAL)
-        frame_index = (frame_index + 1) % len(frames)
+        delay(0.001)
 
     close_canvas()
 
