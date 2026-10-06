@@ -255,6 +255,8 @@ def validate_actions():
         raise ValueError('재생할 소닉 동작이 없습니다.')
 
     action_names = set()
+    moving_action_count = 0
+    centered_action_count = 0
     for action in ACTIONS:
         name = action['name']
         frames = action['frames']
@@ -272,6 +274,10 @@ def validate_actions():
             raise ValueError(f'{name} 동작의 이동 속도가 잘못되었습니다.')
         if movement == MOVEMENT_JUMP and action.get('jump_height', 0) <= 0:
             raise ValueError(f'{name} 동작의 점프 높이가 잘못되었습니다.')
+        if movement == MOVEMENT_CENTER:
+            centered_action_count += 1
+        else:
+            moving_action_count += 1
         action_names.add(name)
 
         for x, y, width, height in frames:
@@ -279,6 +285,9 @@ def validate_actions():
                     x + width > SPRITE_SHEET_WIDTH or
                     y + height > SPRITE_SHEET_HEIGHT):
                 raise ValueError(f'{name} 동작의 프레임 범위가 잘못되었습니다.')
+
+    if moving_action_count != 8 or centered_action_count != 2:
+        raise ValueError('이동 동작 8종과 제자리 동작 2종이 필요합니다.')
 
 
 def main():
