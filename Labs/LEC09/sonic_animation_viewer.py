@@ -39,7 +39,7 @@ ACTIONS = (
         ),
     },
     {
-        'name': '걷기',
+        'name': '걷기와 달리기',
         'movement': MOVEMENT_HORIZONTAL,
         'speed': 120.0,
         'frames': (
@@ -254,7 +254,8 @@ def validate_actions():
         raise ValueError('재생할 소닉 동작이 없습니다.')
 
     action_names = set()
-    moving_action_count = 0
+    horizontal_action_count = 0
+    vertical_action_count = 0
     centered_action_count = 0
     for action in ACTIONS:
         name = action['name']
@@ -277,8 +278,10 @@ def validate_actions():
             raise ValueError(f'{name} 동작의 점프 높이가 잘못되었습니다.')
         if movement == MOVEMENT_CENTER:
             centered_action_count += 1
+        elif movement == MOVEMENT_HORIZONTAL:
+            horizontal_action_count += 1
         else:
-            moving_action_count += 1
+            vertical_action_count += 1
         action_names.add(name)
 
         for x, y, width, height in frames:
@@ -287,8 +290,10 @@ def validate_actions():
                     y + height > SPRITE_SHEET_HEIGHT):
                 raise ValueError(f'{name} 동작의 프레임 범위가 잘못되었습니다.')
 
-    if moving_action_count != 4 or centered_action_count != 6:
-        raise ValueError('이동 동작 4종과 제자리 동작 6종이 필요합니다.')
+    if (horizontal_action_count != 3 or
+            vertical_action_count != 1 or
+            centered_action_count != 6):
+        raise ValueError('수평 이동 3종, 수직 이동 1종, 제자리 6종이 필요합니다.')
 
 
 def main():
