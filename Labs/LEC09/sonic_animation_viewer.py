@@ -55,16 +55,17 @@ def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     sprite_sheet = load_image(IMAGE_PATH)
 
+    frames = ACTIONS[0]['frames']
+    frame_index = 0
     running = True
-    for _ in range(100):
+    while running:
         clear_canvas()
-        draw_frame(sprite_sheet, ACTIONS[0]['frames'][0])
+        draw_frame(sprite_sheet, frames[frame_index])
         update_canvas()
 
         running = handle_events()
-        if not running:
-            break
-        delay(0.01)
+        delay(FRAME_INTERVAL)
+        frame_index = (frame_index + 1) % len(frames)
 
     close_canvas()
 
