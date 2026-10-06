@@ -225,6 +225,16 @@ def update_horizontal_position(action, position_x, direction, elapsed_time):
     return position_x, direction
 
 
+def get_vertical_position(action, action_elapsed):
+    if action['movement'] != MOVEMENT_JUMP:
+        return CANVAS_HEIGHT / 2
+
+    jump_duration = len(action['frames']) * FRAME_INTERVAL
+    jump_phase = (action_elapsed % jump_duration) / jump_duration
+    jump_offset = 4 * action['jump_height'] * jump_phase * (1 - jump_phase)
+    return CANVAS_HEIGHT / 2 + jump_offset
+
+
 def handle_events():
     for event in get_events():
         if event.type == SDL_QUIT:
@@ -288,13 +298,17 @@ def main():
         pause_started_at = None
         position_x, position_y = get_initial_position(current_action)
         direction = 1
+        action_elapsed = 0.0
         running = True
         while running:
             current_time = get_time()
             elapsed_time = current_time - last_position_time
             if playback_state == PLAYING:
+                action_elapsed += elapsed_time
                 position_x, direction = update_horizontal_position(
                     current_action, position_x, direction, elapsed_time)
+                position_y = get_vertical_position(
+                    current_action, action_elapsed)
             last_position_time = current_time
 
             if (playback_state == PLAYING and
@@ -306,6 +320,8 @@ def main():
                         playback_state = PAUSED_BETWEEN_ACTIONS
                         frame_index = len(frames) - 1
                         pause_started_at = current_time
+                        if current_action['movement'] == MOVEMENT_JUMP:
+                            position_y = CANVAS_HEIGHT / 2
                     else:
                         frame_index = next_frame_index
                 else:
@@ -324,6 +340,7 @@ def main():
                 pause_started_at = None
                 position_x, position_y = get_initial_position(current_action)
                 direction = 1
+                action_elapsed = 0.0
 
             clear_canvas()
             draw_frame(sprite_sheet, frames[frame_index],
