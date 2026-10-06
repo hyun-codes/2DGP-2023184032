@@ -10,6 +10,8 @@ ACTION_PAUSE_SECONDS = 1.0
 DEFAULT_SCALE = 4
 CANVAS_MARGIN = 40
 IMAGE_PATH = 'sonic-sprite.png'
+PLAYING = 'playing'
+PAUSED_BETWEEN_ACTIONS = 'paused_between_actions'
 
 # 프레임 좌표 형식: (왼쪽 x, 아래쪽 y, 너비, 높이)
 ACTIONS = (
@@ -58,19 +60,21 @@ def main():
     frames = ACTIONS[0]['frames']
     frame_index = 0
     completed_repeats = 0
-    animation_finished = False
+    playback_state = PLAYING
     last_frame_time = get_time()
+    pause_started_at = None
     running = True
     while running:
         current_time = get_time()
-        if (not animation_finished and
+        if (playback_state == PLAYING and
                 current_time - last_frame_time >= FRAME_INTERVAL):
             next_frame_index = (frame_index + 1) % len(frames)
             if next_frame_index == 0:
                 completed_repeats += 1
                 if completed_repeats >= ACTION_REPEAT_COUNT:
-                    animation_finished = True
+                    playback_state = PAUSED_BETWEEN_ACTIONS
                     frame_index = len(frames) - 1
+                    pause_started_at = current_time
                 else:
                     frame_index = next_frame_index
             else:
