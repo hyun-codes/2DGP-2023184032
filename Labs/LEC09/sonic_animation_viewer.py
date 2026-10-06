@@ -31,6 +31,23 @@ ACTIONS = (
             (302, 448, 29, 26),
         ),
     },
+    {
+        'name': '빠르게 달리기',
+        'frames': (
+            (8, 408, 26, 37),
+            (37, 408, 27, 37),
+            (65, 407, 31, 38),
+            (97, 408, 37, 37),
+            (135, 410, 32, 35),
+            (170, 408, 32, 38),
+            (206, 408, 26, 38),
+            (238, 408, 24, 37),
+            (263, 408, 30, 37),
+            (295, 408, 36, 37),
+            (334, 409, 32, 36),
+            (370, 408, 29, 38),
+        ),
+    },
 )
 
 
@@ -57,7 +74,8 @@ def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     sprite_sheet = load_image(IMAGE_PATH)
 
-    frames = ACTIONS[0]['frames']
+    action_index = 0
+    frames = ACTIONS[action_index]['frames']
     frame_index = 0
     completed_repeats = 0
     playback_state = PLAYING
@@ -82,6 +100,8 @@ def main():
             last_frame_time = current_time
         elif (playback_state == PAUSED_BETWEEN_ACTIONS and
               current_time - pause_started_at >= ACTION_PAUSE_SECONDS):
+            action_index = (action_index + 1) % len(ACTIONS)
+            frames = ACTIONS[action_index]['frames']
             playback_state = PLAYING
             frame_index = 0
             completed_repeats = 0
