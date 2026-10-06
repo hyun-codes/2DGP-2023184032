@@ -15,7 +15,8 @@ FIRST_FRAME = (1, 447, 29, 39)
 def draw_frame(sprite_sheet, frame):
     x, y, width, height = frame
     sprite_sheet.clip_draw(x, y, width, height,
-                           CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
+                           CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2,
+                           width * DEFAULT_SCALE, height * DEFAULT_SCALE)
 
 
 def main():
