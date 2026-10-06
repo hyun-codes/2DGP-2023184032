@@ -70,7 +70,7 @@ ACTIONS = (
         ),
     },
     {
-        'name': '구르기',
+        'name': '회전 진입',
         'movement': MOVEMENT_HORIZONTAL,
         'speed': 220.0,
         'frames': (
@@ -86,9 +86,9 @@ ACTIONS = (
         ),
     },
     {
-        'name': '회전 진입',
-        'movement': MOVEMENT_CENTER,
-        'speed': 0.0,
+        'name': '회전 구르기',
+        'movement': MOVEMENT_HORIZONTAL,
+        'speed': 220.0,
         'frames': (
             (1, 292, 30, 27),
             (36, 292, 29, 27),
@@ -269,8 +269,8 @@ def validate_actions():
                     y + height > SPRITE_SHEET_HEIGHT):
                 raise ValueError(f'{name} 동작의 프레임 범위가 잘못되었습니다.')
 
-    if moving_action_count != 3 or centered_action_count != 7:
-        raise ValueError('이동 동작 3종과 제자리 동작 7종이 필요합니다.')
+    if moving_action_count != 4 or centered_action_count != 6:
+        raise ValueError('이동 동작 4종과 제자리 동작 6종이 필요합니다.')
 
 
 def main():
