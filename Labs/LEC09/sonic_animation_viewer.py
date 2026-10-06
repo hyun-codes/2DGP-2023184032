@@ -14,11 +14,16 @@ CANVAS_MARGIN = 40
 IMAGE_PATH = 'sonic-sprite.png'
 PLAYING = 'playing'
 PAUSED_BETWEEN_ACTIONS = 'paused_between_actions'
+MOVEMENT_CENTER = 'center'
+MOVEMENT_HORIZONTAL = 'horizontal'
+MOVEMENT_JUMP = 'jump'
 
 # 프레임 좌표 형식: (왼쪽 x, 아래쪽 y, 너비, 높이)
 ACTIONS = (
     {
         'name': '걷기와 달리기 전환',
+        'movement': MOVEMENT_HORIZONTAL,
+        'speed': 120.0,
         'frames': (
             (1, 447, 29, 39),
             (31, 447, 26, 38),
@@ -35,6 +40,8 @@ ACTIONS = (
     },
     {
         'name': '빠르게 달리기',
+        'movement': MOVEMENT_HORIZONTAL,
+        'speed': 280.0,
         'frames': (
             (8, 408, 26, 37),
             (37, 408, 27, 37),
@@ -52,6 +59,8 @@ ACTIONS = (
     },
     {
         'name': '급정지',
+        'movement': MOVEMENT_HORIZONTAL,
+        'speed': 160.0,
         'frames': (
             (1, 361, 33, 40),
             (39, 362, 35, 39),
@@ -63,6 +72,9 @@ ACTIONS = (
     },
     {
         'name': '회전 점프',
+        'movement': MOVEMENT_JUMP,
+        'speed': 200.0,
+        'jump_height': 140.0,
         'frames': (
             (1, 326, 29, 30),
             (36, 327, 28, 31),
@@ -77,6 +89,8 @@ ACTIONS = (
     },
     {
         'name': '회전 구체',
+        'movement': MOVEMENT_CENTER,
+        'speed': 0.0,
         'frames': (
             (1, 292, 30, 27),
             (36, 292, 29, 27),
@@ -88,6 +102,9 @@ ACTIONS = (
     },
     {
         'name': '스프링과 착지',
+        'movement': MOVEMENT_JUMP,
+        'speed': 100.0,
+        'jump_height': 200.0,
         'frames': (
             (1, 251, 29, 35),
             (36, 251, 30, 35),
@@ -99,6 +116,8 @@ ACTIONS = (
     },
     {
         'name': '특수 이동',
+        'movement': MOVEMENT_HORIZONTAL,
+        'speed': 220.0,
         'frames': (
             (1, 207, 29, 35),
             (36, 207, 30, 35),
@@ -110,6 +129,8 @@ ACTIONS = (
     },
     {
         'name': '피격과 쓰러짐',
+        'movement': MOVEMENT_HORIZONTAL,
+        'speed': 140.0,
         'frames': (
             (1, 154, 24, 45),
             (31, 154, 29, 44),
@@ -123,6 +144,8 @@ ACTIONS = (
     },
     {
         'name': '균형 잡기와 밀기',
+        'movement': MOVEMENT_HORIZONTAL,
+        'speed': 60.0,
         'frames': (
             (1, 108, 27, 38),
             (31, 110, 31, 36),
@@ -136,6 +159,8 @@ ACTIONS = (
     },
     {
         'name': '위아래 보기',
+        'movement': MOVEMENT_CENTER,
+        'speed': 0.0,
         'frames': (
             (6, 56, 34, 40),
             (49, 56, 34, 43),
@@ -179,10 +204,20 @@ def validate_actions():
     for action in ACTIONS:
         name = action['name']
         frames = action['frames']
+        movement = action['movement']
+        speed = action['speed']
         if not name or name in action_names:
             raise ValueError(f'동작 이름이 비어 있거나 중복되었습니다: {name!r}')
         if not frames:
             raise ValueError(f'{name} 동작에 프레임이 없습니다.')
+        if movement not in (MOVEMENT_CENTER,
+                            MOVEMENT_HORIZONTAL,
+                            MOVEMENT_JUMP):
+            raise ValueError(f'{name} 동작의 이동 유형이 잘못되었습니다.')
+        if speed < 0 or (movement != MOVEMENT_CENTER and speed == 0):
+            raise ValueError(f'{name} 동작의 이동 속도가 잘못되었습니다.')
+        if movement == MOVEMENT_JUMP and action.get('jump_height', 0) <= 0:
+            raise ValueError(f'{name} 동작의 점프 높이가 잘못되었습니다.')
         action_names.add(name)
 
         for x, y, width, height in frames:
