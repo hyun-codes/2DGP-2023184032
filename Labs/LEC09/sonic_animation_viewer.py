@@ -12,14 +12,18 @@ IMAGE_PATH = 'sonic-sprite.png'
 FIRST_FRAME = (1, 447, 29, 39)
 
 
+def draw_frame(sprite_sheet, frame):
+    x, y, width, height = frame
+    sprite_sheet.clip_draw(x, y, width, height,
+                           CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
+
+
 def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     sprite_sheet = load_image(IMAGE_PATH)
 
-    x, y, width, height = FIRST_FRAME
     clear_canvas()
-    sprite_sheet.clip_draw(x, y, width, height,
-                           CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
+    draw_frame(sprite_sheet, FIRST_FRAME)
     update_canvas()
     delay(1.0)
 
