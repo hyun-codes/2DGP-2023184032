@@ -10,7 +10,26 @@ ACTION_PAUSE_SECONDS = 1.0
 DEFAULT_SCALE = 4
 CANVAS_MARGIN = 40
 IMAGE_PATH = 'sonic-sprite.png'
-FIRST_FRAME = (1, 447, 29, 39)
+
+# 프레임 좌표 형식: (왼쪽 x, 아래쪽 y, 너비, 높이)
+ACTIONS = (
+    {
+        'name': '걷기와 달리기 전환',
+        'frames': (
+            (1, 447, 29, 39),
+            (31, 447, 26, 38),
+            (58, 447, 28, 39),
+            (86, 447, 30, 38),
+            (118, 447, 30, 38),
+            (150, 447, 30, 38),
+            (182, 447, 29, 38),
+            (211, 448, 29, 38),
+            (240, 448, 29, 38),
+            (270, 448, 24, 32),
+            (302, 448, 29, 26),
+        ),
+    },
+)
 
 
 def draw_frame(sprite_sheet, frame):
@@ -39,7 +58,7 @@ def main():
     running = True
     for _ in range(100):
         clear_canvas()
-        draw_frame(sprite_sheet, FIRST_FRAME)
+        draw_frame(sprite_sheet, ACTIONS[0]['frames'][0])
         update_canvas()
 
         running = handle_events()
