@@ -2,9 +2,16 @@
 
 from pico2d import *
 
+CANVAS_WIDTH = 1200
+CANVAS_HEIGHT = 800
+FRAME_INTERVAL = 0.1
+ACTION_REPEAT_COUNT = 5
+ACTION_PAUSE_SECONDS = 1.0
+DEFAULT_SCALE = 4
+
 
 def main():
-    open_canvas()
+    open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     close_canvas()
 
 
